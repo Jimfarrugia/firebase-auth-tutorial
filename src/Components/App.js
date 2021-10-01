@@ -3,6 +3,7 @@ import Dashboard from "./Dashboard";
 import Login from "./Login";
 import ForgotPassword from "./ForgotPassword";
 import UpdateProfile from "./UpdateProfile";
+import PageNotFound from "./PageNotFound";
 import { Container } from "react-bootstrap";
 import { AuthProvider } from "../contexts/AuthContext";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
@@ -23,6 +24,7 @@ function App() {
               <Route path="/signup" component={Signup} />
               <Route path="/login" component={Login} />
               <Route path="/forgot-password" component={ForgotPassword} />
+              <Route component={PageNotFound} />
             </Switch>
           </AuthProvider>
         </Router>
