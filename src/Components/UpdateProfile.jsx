@@ -7,12 +7,12 @@ const UpdateProfile = () => {
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmationRef = useRef();
-  const { currentUser, updatePassword, updateEmail } = useAuth();
+  const { currentUser, updateUserPassword, updateUserEmail } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const history = useHistory();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     if (passwordRef.current.value !== passwordConfirmationRef.current.value) {
       return setError("Passwords do not match.");
@@ -23,10 +23,10 @@ const UpdateProfile = () => {
     setLoading(true);
 
     if (emailRef.current.value !== currentUser.email) {
-      promises.push(updateEmail(emailRef.current.value));
+      promises.push(updateUserEmail(emailRef.current.value));
     }
     if (passwordRef.current.value !== currentUser.password) {
-      promises.push(updatePassword(passwordRef.current.value));
+      promises.push(updateUserPassword(passwordRef.current.value));
     }
 
     Promise.all(promises)

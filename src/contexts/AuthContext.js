@@ -1,5 +1,14 @@
 import React, { useContext, useState, useEffect } from "react";
 import { auth } from "../firebase";
+import {
+  onAuthStateChanged,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  signOut,
+  updateEmail,
+  updatePassword,
+} from "firebase/auth";
 
 const AuthContext = React.createContext();
 
@@ -7,26 +16,24 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState();
-  const [loading, setLoading] = useState(true);
 
   const signup = (email, password) =>
-    auth.createUserWithEmailAndPassword(email, password);
+    createUserWithEmailAndPassword(auth, email, password);
 
   const login = (email, password) =>
-    auth.signInWithEmailAndPassword(email, password);
+    signInWithEmailAndPassword(auth, email, password);
 
-  const logout = () => auth.signOut();
+  const logout = () => signOut(auth);
 
-  const resetPassword = (email) => auth.sendPasswordResetEmail(email);
+  const resetPassword = email => sendPasswordResetEmail(auth, email);
 
-  const updateEmail = (email) => currentUser.updateEmail(email);
+  const updateUserEmail = email => updateEmail(currentUser, email);
 
-  const updatePassword = (password) => currentUser.updatePassword(password);
+  const updateUserPassword = password => updatePassword(currentUser, password);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = onAuthStateChanged(auth, user => {
       setCurrentUser(user);
-      setLoading(false);
     });
     return unsubscribe;
   }, []);
@@ -37,13 +44,9 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     resetPassword,
-    updateEmail,
-    updatePassword,
+    updateUserEmail,
+    updateUserPassword,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {!loading && children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
