@@ -6,18 +6,30 @@ import { useAuth } from "../contexts/AuthContext";
 const Login = () => {
   const emailRef = useRef();
   const passwordRef = useRef();
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const history = useHistory();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
 
     try {
       setError("");
       setLoading(true);
       await login(emailRef.current.value, passwordRef.current.value);
+      history.push("/");
+    } catch {
+      setError("Failed to sign in.");
+    }
+    setLoading(false);
+  };
+
+  const handleLoginWithGoogle = async () => {
+    setError("");
+    setLoading(true);
+    try {
+      await loginWithGoogle();
       history.push("/");
     } catch {
       setError("Failed to sign in.");
@@ -44,6 +56,13 @@ const Login = () => {
               Log In
             </Button>
           </Form>
+          <Button
+            disabled={loading}
+            className="w-100 mt-3"
+            onClick={handleLoginWithGoogle}
+          >
+            Log In with Google
+          </Button>
           <div className="w-100 text-center mt-3">
             <Link to="/forgot-password">Forgot Password</Link>
           </div>
